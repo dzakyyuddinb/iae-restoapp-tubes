@@ -1,0 +1,7 @@
+Flask==2.3.3
+graphene==2.1.9
+graphene-sqlalchemy==2.3.0
+SQLAlchemy==1.4.51
+Flask-SQLAlchemy==2.5.1
+pymysql==1.1.0
+flask-cors==4.0.0
