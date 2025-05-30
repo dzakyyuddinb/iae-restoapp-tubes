@@ -4,13 +4,15 @@ from gqlschema.schema import schema
 from flask_graphql import GraphQLView
 
 app = Flask(__name__)
-SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:your_password@localhost/restoapp_order"  # Ganti sesuai service
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/restoapp_order'  # Ganti sesuai service
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 # Create database tables
 with app.app_context():
     db.create_all()
+    print("Database connected:", db.engine.url)
+
 
 @app.route('/')
 def index():
