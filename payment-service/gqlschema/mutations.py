@@ -2,6 +2,12 @@ import graphene
 from models import db, Payment
 from .types import PaymentType
 from datetime import datetime
+from pytz import timezone
+
+
+jakarta_tz = timezone('Asia/Jakarta')
+payment_time = datetime.now(jakarta_tz)
+
 
 class CreatePayment(graphene.Mutation):
     class Arguments:
@@ -20,7 +26,7 @@ class CreatePayment(graphene.Mutation):
             amount=amount,
             status=status,
             payment_method=payment_method,
-            payment_time=datetime.utcnow()
+            payment_time=payment_time
         )
         db.session.add(payment)
         db.session.commit()
