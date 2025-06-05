@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_RUN_PORT=5000
+      - MYSQL_HOST=user-mysql
+      - MYSQL_DB=restoapp_user
+    depends_on:
+      - user-mysql
+
+  menu-service:
+    build:
+      context: .
+      dockerfile: menu-service/Dockerfile
+    ports:
+      - "5002:5000"
+    environment:
+      - FLASK_RUN_PORT=5000
+      - MYSQL_HOST=menu-mysql
+      - MYSQL_DB=restoapp_menu
+    depends_on:
+      - menu-mysql
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    ports:
+      - "5003:5000"
+    environment:
+      - FLASK_RUN_PORT=5000
+      - MYSQL_HOST=order-mysql
+      - MYSQL_DB=restoapp_order
+    depends_on:
+      - order-mysql
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+    ports:
+      - "5004:5000"
+    environment:
+      - FLASK_RUN_PORT=5000
+      - MYSQL_HOST=payment-mysql
+      - MYSQL_DB=restoapp_payment
+    depends_on:
+      - payment-mysql
+
+  user-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restoapp_user
+    ports:
+      - "3309:3306"
+    volumes:
+      - user-mysql-data:/var/lib/mysql
+
+  menu-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restoapp_menu
+    ports:
+      - "3310:3306"
+    volumes:
+      - menu-mysql-data:/var/lib/mysql
+
+  order-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restoapp_order
+    ports:
+      - "3311:3306"
+    volumes:
+      - order-mysql-data:/var/lib/mysql
+
+  payment-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: restoapp_payment
+    ports:
+      - "3312:3306"
+    volumes:
+      - payment-mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8082:80"
+    environment:
+      PMA_HOST: user-mysql
+      PMA_PORT: 3306
+    depends_on:
+      - user-mysql
+
+  phpmyadmin-menu:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8083:80"
+    environment:
+      PMA_HOST: menu-mysql
+      PMA_PORT: 3306
+    depends_on:
+      - menu-mysql
+
+  phpmyadmin-order:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8084:80"
+    environment:
+      PMA_HOST: order-mysql
+      PMA_PORT: 3306
+    depends_on:
+      - order-mysql
+
+  phpmyadmin-payment:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8085:80"
+    environment:
+      PMA_HOST: payment-mysql
+      PMA_PORT: 3306
+    depends_on:
+      - payment-mysql
+
+volumes:
+  user-mysql-data:
+  menu-mysql-data:
+  order-mysql-data:
+  payment-mysql-data:

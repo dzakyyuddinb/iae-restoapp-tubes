@@ -5,3 +5,5 @@ SQLAlchemy==1.4.51
 Flask-SQLAlchemy==2.5.1
 pymysql==1.1.0
 flask-cors==4.0.0
+flask-graphql==2.0.1
+pytz==2023.3
