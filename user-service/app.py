@@ -16,7 +16,7 @@ db.init_app(app)
 
 @app.route('/')
 def index():
-    return "User Service GraphQL is running! on http://localhost:5001/graphql"
+    return "User Service GraphQL is running!"
 
 app.add_url_rule(
     '/graphql',
