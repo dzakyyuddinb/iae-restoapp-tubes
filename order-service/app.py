@@ -4,8 +4,12 @@ from flask import Flask, request, jsonify
 from models import db
 from gqlschema.schema import schema
 from flask_graphql import GraphQLView
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
+
 import os
 mysql_host = os.getenv('MYSQL_HOST', 'mysql')
 mysql_db = os.getenv('MYSQL_DB', 'restoapp')

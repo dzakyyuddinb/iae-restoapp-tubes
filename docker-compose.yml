@@ -12,7 +12,8 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_user
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   menu-service:
     build:
@@ -25,7 +26,8 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_menu
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   order-service:
     build:
@@ -35,10 +37,11 @@ services:
       - "5003:5000"
     environment:
       - FLASK_RUN_PORT=5000
-      - MYSQL_HOST=
+      - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_order
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   payment-service:
     build:
@@ -51,19 +54,26 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_payment
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: restoapp_user, restoapp_menu, restoapp_order, restoapp_payment
+      MYSQL_DATABASE: restoapp
     ports:
       - "3308:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     command: >
       --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
