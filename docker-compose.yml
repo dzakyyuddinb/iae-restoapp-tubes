@@ -9,10 +9,11 @@ services:
       - "5001:5000"
     environment:
       - FLASK_RUN_PORT=5000
-      - MYSQL_HOST=user-mysql
+      - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_user
     depends_on:
-      - user-mysql
+      mysql:
+        condition: service_healthy
 
   menu-service:
     build:
@@ -22,10 +23,11 @@ services:
       - "5002:5000"
     environment:
       - FLASK_RUN_PORT=5000
-      - MYSQL_HOST=menu-mysql
+      - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_menu
     depends_on:
-      - menu-mysql
+      mysql:
+        condition: service_healthy
 
   order-service:
     build:
@@ -35,11 +37,12 @@ services:
       - "5003:5000"
     environment:
       - FLASK_RUN_PORT=5000
-      - MYSQL_HOST=order-mysql
+      - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_order
       - MYSQL_ROOT_PASSWORD=root
     depends_on:
-      - order-mysql
+      mysql:
+        condition: service_healthy
 
   payment-service:
     build:
@@ -49,97 +52,40 @@ services:
       - "5004:5000"
     environment:
       - FLASK_RUN_PORT=5000
-      - MYSQL_HOST=payment-mysql
+      - MYSQL_HOST=mysql
       - MYSQL_DB=restoapp_payment
     depends_on:
-      - payment-mysql
+      mysql:
+        condition: service_healthy
 
-  user-mysql:
+  mysql:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: restoapp_user
+      MYSQL_DATABASE: restoapp
     ports:
-      - "3309:3306"
+      - "3308:3306"
     volumes:
-      - user-mysql-data:/var/lib/mysql
-
-  menu-mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: restoapp_menu
-    ports:
-      - "3310:3306"
-    volumes:
-      - menu-mysql-data:/var/lib/mysql
-
-  order-mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: restoapp_order
-    ports:
-      - "3311:3306"
-    volumes:
-      - order-mysql-data:/var/lib/mysql
-
-  payment-mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: restoapp_payment
-    ports:
-      - "3312:3306"
-    volumes:
-      - payment-mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+    command: >
+      --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "8082:80"
+      - "8088:80"
     environment:
-      PMA_HOST: user-mysql
+      PMA_HOST: mysql
       PMA_PORT: 3306
     depends_on:
-      - user-mysql
-
-  phpmyadmin-menu:
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8083:80"
-    environment:
-      PMA_HOST: menu-mysql
-      PMA_PORT: 3306
-    depends_on:
-      - menu-mysql
-
-  phpmyadmin-order:
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8084:80"
-    environment:
-      PMA_HOST: order-mysql
-      PMA_PORT: 3306
-    depends_on:
-      - order-mysql
-
-  phpmyadmin-payment:
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8085:80"
-    environment:
-      PMA_HOST: payment-mysql
-      PMA_PORT: 3306
-    depends_on:
-      - payment-mysql
+      - mysql
 
 volumes:
-  user-mysql-data:
-  menu-mysql-data:
-  order-mysql-data:
-  payment-mysql-data:
+  mysql-data:

@@ -5,9 +5,11 @@ from flask import Flask, request, jsonify
 from models import db
 from gqlschema.schema import schema
 from flask_graphql import GraphQLView
+from flask_cors import CORS
 from sqlalchemy.exc import OperationalError
 
 app = Flask(__name__)
+CORS(app)
 
 # Konfigurasi database dari environment variable
 mysql_host = os.getenv('MYSQL_HOST', 'mysql')
@@ -52,6 +54,6 @@ if __name__ == "__main__":
         if arg.startswith('--port='):
             port = int(arg.split('=')[1])
     app.run(host='0.0.0.0', port=port, debug=True)
-    
+
 # Note: This code is designed to be run in a Docker container with the necessary environment variables set.
 # Ensure that the MySQL service is running and accessible from this container.
