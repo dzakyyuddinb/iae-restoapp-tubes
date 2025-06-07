@@ -9,7 +9,8 @@ app = Flask(__name__)
 import os
 mysql_host = os.getenv('MYSQL_HOST', 'mysql')
 mysql_db = os.getenv('MYSQL_DB', 'restoapp')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:@{mysql_host}/{mysql_db}'
+mysql_password = os.getenv('MYSQL_ROOT_PASSWORD', 'root')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{mysql_password}@{mysql_host}/{mysql_db}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 

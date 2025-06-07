@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Order(db.Model):
-    __tablename__ = 'iae_orders'
+    __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
     status = db.Column(db.Enum('created', 'processed', 'completed', name='order_status_enum'))
